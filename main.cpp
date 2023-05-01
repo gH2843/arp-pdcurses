@@ -23,10 +23,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 std::ifstream fin;
 
+char temp_file_name[MAX_PATH];
+
 bool correctly_term = false;
 void SignalHandler() {
     fin.close();
-    remove("IP_arp.txt.temp_3234834");
+    if (temp_file_name[0] != 0) {
+        remove(temp_file_name);
+    }
     endwin();
     if (correctly_term) {
         exit(0);
@@ -35,6 +39,11 @@ void SignalHandler() {
 }
 
 int main() {
+
+    char temp_file_path[MAX_PATH];
+    GetTempPathA(MAX_PATH, temp_file_path);
+    GetTempFileNameA(temp_file_path,"apc",0,temp_file_name);
+
     initscr();
     cbreak();
     noecho();
@@ -70,11 +79,15 @@ int main() {
     char line;
     bool auto_is_selected = false;
     int i = 0, delay = -1;
+
+    char command[269] = "arp -a > ";
+    strcat(command,temp_file_name);
     do {
         timeout(delay);
         ++i;
         clear();
-        system("arp -a > IP_arp.txt.temp_3234834");
+
+        system(command);
 
         printw("(r)efresh (q)uit (a)uto  Count:%d%s",i,"\n-----------------------");
         if (auto_is_selected) {
@@ -82,7 +95,7 @@ int main() {
         }
 
         move(2, 0);
-        fin.open("IP_arp.txt.temp_3234834");
+        fin.open(temp_file_name);
         while (fin.get(line)) {
             printw("%c", line);
         }

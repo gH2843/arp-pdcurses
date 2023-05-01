@@ -30,6 +30,4 @@ $ cmake ../ && make -j
 ```
 **Note: dependency: [pdcurses](https://github.com/wmcbrine/PDCurses)**
 ## Roadmap
-- [ ] Save temp files to temp system directory
-- [x] ~~Disclaimer was not displayed on further launches~~
-- [x] ~~Processing of termination signals~~
+- [ ] Make roadmap for the next major release
