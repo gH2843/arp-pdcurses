@@ -1,12 +1,15 @@
 <h1 align="center">arp-pdcurses</h1>
 <p align="center">
-Simple pdcurses TUI for "arp -a" command (Windows os). This is a simple pet project.
+Aka ArpPDC - simple pdcurses TUI for "arp -a" command (Windows os). This is a simple pet project.
 </p>
 <p align="center">
 This program is released under license GPL-3.0 or later.
   <a href="https://GitHub.com/gH2843/arp-pdcurses/releases/">
     <img alt="Github release" src="https://img.shields.io/github/release/gH2843/arp-pdcurses.svg?color=%23197B30&include_prereleases">
   </a>
+</p>
+<p align="center">
+<img alt="Preview" src="res/preview.png">
 </p>
 
 ## Install
@@ -28,5 +31,5 @@ $ cmake ../ && make -j
 **Note: dependency: [pdcurses](https://github.com/wmcbrine/PDCurses)**
 ## Roadmap
 - [ ] Save temp files to temp system directory
-- [ ] Disclaimer was not displayed on further launches
+- [x] ~~Disclaimer was not displayed on further launches~~
 - [ ] Processing of termination signals

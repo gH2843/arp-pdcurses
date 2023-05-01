@@ -15,21 +15,46 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
+#include <windows.h>
+
 #include <fstream>
+#include <iostream>
 
 #include "include/curses.h"
 
 int main() {
-    std::ifstream fin;
+
     initscr();
     cbreak();
     noecho();
     curs_set(0);
 
-    printw("arp-pdcurses  Copyright (C) 2023  gH2843\nThis program comes with ABSOLUTELY NO WARRANTY;\nThis is free software, and you are welcome to redistribute it\nunder certain conditions;\nsee <https://www.gnu.org/licenses/gpl-3.0.html> for details.\n\n                  Press any key to continue");
+    HKEY hKey;
+    DWORD value, data_size = sizeof(DWORD);
+    if  (RegGetValue(HKEY_CURRENT_USER, "SOFTWARE\\arp-pdcurses", "LicenseAgreementAccepted", RRF_RT_REG_DWORD, nullptr, &value, &data_size) == ERROR_SUCCESS){
+        //run program without disclaimer
+    }
+    else {
+        if ((RegCreateKeyEx(HKEY_CURRENT_USER, "SOFTWARE\\arp-pdcurses", 0, nullptr, REG_OPTION_NON_VOLATILE,KEY_WRITE, nullptr, &hKey, nullptr) == ERROR_SUCCESS)) {
+            printw("arp-pdcurses Copyright (C) 2023  gH2843\nThis program comes with ABSOLUTELY NO WARRANTY;\nThis is free software, and you are welcome to redistribute it\nunder certain conditions;\nsee <https://www.gnu.org/licenses/gpl-3.0.html> for details.\n\n         Press 'q' to quit, any other key to continue");
+            switch (getch()) {
+                case 'q':
+                case 'Q':
+                case 65449:
+                case 65417:
+                    endwin();
+                    RegCloseKey(hKey);
+                    return 0;
+                default:
+                    value = 1;
+                    RegSetValueEx(hKey, "LicenseAgreementAccepted", 0, REG_DWORD, reinterpret_cast<const BYTE *>(&value), data_size);
+                    RegCloseKey(hKey);
+                    break;
+            }
+        }
+    }
 
-    getch();
-
+    std::ifstream fin;
     char line;
     bool select_auto = false;
     int i = 0, delay = -1;
