@@ -32,4 +32,4 @@ $ cmake ../ && make -j
 ## Roadmap
 - [ ] Save temp files to temp system directory
 - [x] ~~Disclaimer was not displayed on further launches~~
-- [ ] Processing of termination signals
+- [x] ~~Processing of termination signals~~

@@ -18,16 +18,29 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 #include <windows.h>
 
 #include <fstream>
-#include <iostream>
 
 #include "include/curses.h"
 
-int main() {
+std::ifstream fin;
 
+bool correctly_term = false;
+void SignalHandler() {
+    fin.close();
+    remove("IP_arp.txt.temp_3234834");
+    endwin();
+    if (correctly_term) {
+        exit(0);
+    }
+    exit(1);
+}
+
+int main() {
     initscr();
     cbreak();
     noecho();
     curs_set(0);
+
+    atexit(SignalHandler); //signal handler, for the correct termination of the program in any case of termination
 
     HKEY hKey;
     DWORD value, data_size = sizeof(DWORD);
@@ -42,9 +55,9 @@ int main() {
                 case 'Q':
                 case 65449:
                 case 65417:
-                    endwin();
                     RegCloseKey(hKey);
-                    return 0;
+                    correctly_term = true;
+                    SignalHandler();
                 default:
                     value = 1;
                     RegSetValueEx(hKey, "LicenseAgreementAccepted", 0, REG_DWORD, reinterpret_cast<const BYTE *>(&value), data_size);
@@ -54,9 +67,8 @@ int main() {
         }
     }
 
-    std::ifstream fin;
     char line;
-    bool select_auto = false;
+    bool auto_is_selected = false;
     int i = 0, delay = -1;
     do {
         timeout(delay);
@@ -65,8 +77,8 @@ int main() {
         system("arp -a > IP_arp.txt.temp_3234834");
 
         printw("(r)efresh (q)uit (a)uto  Count:%d%s",i,"\n-----------------------");
-        if (select_auto) {
-            mvchgat(0,17,6,A_REVERSE,0,NULL);
+        if (auto_is_selected) {
+            mvchgat(0,17,6,A_REVERSE,0,nullptr);
         }
 
         move(2, 0);
@@ -76,6 +88,7 @@ int main() {
         }
         refresh();
 
+        fin.close();
         switch (getch()) {
             case 'a':
             case 'A':
@@ -85,8 +98,9 @@ int main() {
                     mvprintw(0, 24, "Enter delay:");
                     std::string buffer;
                     int num_ch;
-                    mvchgat(0,17,6,A_REVERSE,0,NULL);
+                    mvchgat(0,17,6,A_REVERSE,0,nullptr);
                     while ((num_ch = getch()) != '\n') {
+                        Buffer_Is_Empty_And_Endl: // to avoid an error when the buffer is empty
                         if (isdigit(num_ch)) {
                             // add a digit to the buffer and display it on the screen
                             buffer += num_ch;
@@ -101,25 +115,23 @@ int main() {
                             refresh();
                         }
                     }
+                    if (buffer.empty()) {goto Buffer_Is_Empty_And_Endl;} //to avoid an error when the buffer is empty
                     delay = (stoi(buffer) * 1000);
-                    select_auto = true;
+                    auto_is_selected = true;
                 } else {
                     delay = -1;
-                    select_auto = false;
+                    auto_is_selected = false;
                 }
-                fin.close();
                 break;
             case 'q':
             case 'Q':
             case 65449:
             case 65417:
-                fin.close();
-                remove("IP_arp.txt.temp_3234834");
-                endwin();
+                correctly_term = true;
+                SignalHandler();
                 return 0;
             // case 'r':
             default:
-                fin.close();
                 break;
         }
     } while (true);
