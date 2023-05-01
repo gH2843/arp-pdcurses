@@ -5,7 +5,7 @@ Simple pdcurses TUI for "arp -a" command (Windows os). This is a simple pet proj
 <p align="center">
 This program is released under license GPL-3.0 or later.
   <a href="https://GitHub.com/gH2843/arp-pdcurses/releases/">
-    <img alt="Github release" src="https://img.shields.io/github/release/gH2843/arp-pdcurses.svg">
+    <img alt="Github release" src="https://img.shields.io/github/release/gH2843/arp-pdcurses.svg?color=%23197B30&include_prereleases">
   </a>
 </p>
 
@@ -15,10 +15,10 @@ This program is released under license GPL-3.0 or later.
 ```console
 $ git clone https://github.com/gH2843/arp-pdcurses.git
 $ git clone https://github.com/wmcbrine/PDCurses.git
-$ cd PDCurses/wincon && make -j
-$ mv ../curses.h ../../arp-pdcurses/include.
+$ cd PDCurses/wincon && mingw32-make -f Makefile -j
+$ mkdir ../../arp-pdcurses/build ../../arp-pdcurses/include ../../arp-pdcurses/lib
+$ mv ../curses.h ../../arp-pdcurses/include
 $ mv pdcurses.a ../../arp-pdcurses/lib
-$ mkdir ../../arp-pdcurses/build
 $ cd ../../arp-pdcurses/build && rm -rf ../../PDCurses
 ```
 - Run CMake file:

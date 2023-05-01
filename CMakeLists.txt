@@ -9,5 +9,5 @@ add_executable(ArpPDC main.cpp ${CMAKE_SOURCE_DIR}/res/appicon.rc)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-target_link_libraries(ArpPDC ${CMAKE_SOURCE_DIR}/lib/pdcurses.a)
+target_link_libraries(ArpPDC ${CMAKE_SOURCE_DIR}/lib/pdcurses.a stdc++)
 
